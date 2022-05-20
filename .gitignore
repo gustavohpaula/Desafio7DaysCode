@@ -1,0 +1,8 @@
+# Eclipse
+.project
+.classpath
+.metadata/
+.settings/
+
+sevenDaysCode/src/main/java/apiKey/
+sevenDaysCode/target/
