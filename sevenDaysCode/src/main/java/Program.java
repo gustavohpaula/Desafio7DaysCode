@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+
 import apiKey.ApiKey;
+import entities.Filme;
 
 public class Program {
 
@@ -32,18 +37,17 @@ public class Program {
 			if (response.statusCode() != 200)
 				throw new Exception("uri n�o encontrada");
 
-			String bode = response.body();
-			List<String> objetos = new ArrayList<>(List.of(bode.split(",")));
+			String body = response.body();
+			JSONObject j = new JSONObject(body);
+			String items = j.getString("items");
 
-			List<String> titulo = campoFilter(objetos, "fullTitle");
-			List<String> imagens = campoFilter(objetos, "image");
-			List<String> imDbRatings = campoFilter(objetos, "imDbRating");
-			List<String> years = campoFilter(objetos, "year");
+			Gson g = new Gson();
 
-			titulo.forEach(System.out::println);
-			imagens.forEach(System.out::println);
-			imDbRatings.forEach(System.out::println);
-			years.forEach(System.out::println);
+			Filme[] f = g.fromJson(items, Filme[].class);
+
+			for (Filme filme : f) {
+				System.out.println(filme);
+			}
 
 		} catch (Exception e) {
 			throw new Exception("ERRO: " + e);
@@ -51,12 +55,9 @@ public class Program {
 	}
 
 	public static List<String> campoFilter(List<String> objetos, String campo) {
-		return objetos
-				.stream()
-				.filter(s -> s.startsWith("\"" + campo + "\""))
-				.map((s -> s.replace("\"" + campo + "\":", "")))
-				.map(s -> s.replace("\"", ""))
-				.map(s -> s.replace("}", ""))
-				.collect(Collectors.toList());
+
+		return objetos.stream().filter(s -> s.startsWith("\"" + campo + "\""))
+				.map((s -> s.replace("\"" + campo + "\":", ""))).map(s -> s.replace("\"", ""))
+				.map(s -> s.replace("}", "")).collect(Collectors.toList());
 	}
 }
