@@ -7,8 +7,7 @@ public class Filme {
 	private String imDbRating;
 	private String year;
 
-	public Filme(String title, String image, String imDbRating, String fullTitle, String imDbRatingCount, String rank,
-			String id, String crew, String year) {
+	public Filme(String title, String image, String imDbRating, String fullTitle, String year) {
 		this.title = title;
 		this.image = image;
 		this.imDbRating = imDbRating;
